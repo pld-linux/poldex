@@ -6,12 +6,12 @@
 Summary:	Frontend to poldek
 Summary(pl):	Nak³adka na poldka
 Name:		poldex
-Version:	0.17.2
+Version:	0.17.3
 Release:	1
 License:	GPL
 Group:		Applications
 Source0:	http://www.yogib.risp.pl/poldex/%{name}-%{version}.tar.bz2
-# Source0-md5:	436a84a3d7663c2c57d423092de7eb30
+# Source0-md5:	41389284af23dc3173accfc0b846d532
 URL:		http://www.yogib.risp.pl/
 %if %{with autodeps}
 BuildRequires:	perl-Curses
