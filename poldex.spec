@@ -2,7 +2,7 @@
 # Conditional build:
 %bcond_without	autodeps	- don't BR packages needed only for resolving deps
 #
-%include        /usr/lib/rpm/macros.perl
+%include	/usr/lib/rpm/macros.perl
 Summary:	Frontend to poldek
 Summary(pl):	Nak³adka na poldka
 Name:		poldex
