@@ -1,0 +1,504 @@
+#!/usr/bin/perl -w
+#
+#    Poldex
+#    v 0.15
+#    Simple frontend to great POLDEK.
+#    
+#==============================================================================
+#    Copyright (C) 2003 Zbigniew Banasik (zban@inetia.pl)
+#
+#    This program is free software; you can redistribute it and/or modify
+#    it under the terms of the GNU General Public License as published by
+#    the Free Software Foundation; either version 2 of the License, or
+#    (at your option) any later version.
+#
+#    This program is distributed in the hope that it will be useful,
+#    but WITHOUT ANY WARRANTY; without even the implied warranty of
+#    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#    GNU General Public License for more details.
+#
+#    You should have received a copy of the GNU General Public License
+#    along with this program; if not, write to the Free Software
+#    Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+#==============================================================================
+
+use strict;
+#use Term::ReadKey;
+use Curses;
+
+my %packets=();
+my @packets_list=();
+my @installed=();
+my @desc=();
+my @to_install=();
+my @to_uninstall=();
+my $index=0;
+my $input='';
+my $i=0;
+my $g=0;
+my $sort=0;
+my $num_p=0;
+my $num_pinst=0;
+
+&read_poldek;
+initscr(); 	# Start curses
+if(has_colors()){
+	start_color();
+	&my_colors;
+}
+noecho();
+cbreak();	# Line buffering disabled
+keypad(stdscr, 1);
+curs_set(0);
+getmaxyx(stdscr ,my $y, my $x);
+
+# wysokosc tabelki
+my $th=$y-12;
+# jednak cos musi byc widac
+if($th<2){$th=2}
+
+
+#kolory
+my $kzie="\033[32m";
+my $kbia="\033[0m";
+my $kcze="\033[31m";
+my $kzol="\033[33m";
+my $knie="\033[34m";
+my $ktur="\033[36m";
+
+&chkinstalled;
+
+@packets_list= sort keys %packets;
+$num_p=@packets_list;
+
+&table;
+&men_key;
+while($input ne 'q'){
+$input=&key();
+&on_key();
+}
+endwin(); 	# End curses
+system('clear');
+sub key{
+#	ReadMode 4;
+#	my $key=ReadKey(0);
+#	ReadMode 0;
+	my $key=getch();
+	return $key;
+
+}
+sub help{
+}
+sub table{
+	my $ilosc=0;
+	my $y=3;
+	my $gl=' ';
+	my $wsk='';
+        while(length($gl)<$x){$gl.=' '}
+        $ilosc=@packets_list;
+        while($index>$ilosc-1){$index--};
+        if($index<0){$index=0};
+        while($index>$i+$th){$i++};
+        while($index<$i){$i--};
+	hline(2,0,ACS_HLINE,$x);
+	addch(1,2,' ');
+	if($sort==0){attron(COLOR_PAIR(6));addch(1,2,ACS_UARROW)}
+	if($sort==1){attron(COLOR_PAIR(6));addch(1,2,ACS_DARROW)}
+	addstr(1,($x/4)-15,"Packets (");
+	printw "$num_p/$num_pinst inst.) ";
+	attroff(COLOR_PAIR(6));
+	addch(1,($x/2)-6,' ');
+	if($sort==2){attron(COLOR_PAIR(6));addch(1,($x/2)-6,ACS_UARROW)}
+	if($sort==3){attron(COLOR_PAIR(6));addch(1,($x/2)-6,ACS_DARROW)}
+        addstr(1,($x/2)-3,"Status");
+	attroff(COLOR_PAIR(6));
+	addch(1,($x/2)+7,' ');
+	if($sort==4){attron(COLOR_PAIR(6));addch(1,($x/2)+7,ACS_UARROW)}
+	if($sort==5){attron(COLOR_PAIR(6));addch(1,($x/2)+7,ACS_DARROW)}
+	addstr(1,($x/4+$x/2)-2,"Groups");
+	attroff(COLOR_PAIR(6));
+        for (my $j=$i;$j<$i+$th+1;$j++){
+       	     my ($a,$b,$c,$z);
+	     if ($j==$index){attron(COLOR_PAIR(2) | A_REVERSE)};
+           $z='|';
+           if (defined $packets_list[$j] && exists $packets{$packets_list[$j]}){
+		   $a=$packets_list[$j];
+		   if($packets{$packets_list[$j]}[0] eq 'I'){$b=' Installed';
+		   }else{$b=$packets{$packets_list[$j]}[0]};
+		   $c=$packets{$packets_list[$j]}[2];
+		   if(length($a)>int($x/2)-8){$a=substr($a,0,(length($a)-(int($x/2)-8)))}
+		   if(length($c)>int($x/2)+8){$c=substr($c,0,(length($c)-(($x-2)-(int($x/2)+8))))}
+		   addstr($y,0,$gl);
+		   addstr($y,2,"$a");
+		   if($b eq 'To  Install'){attron(COLOR_PAIR(1))}
+		   if($b eq 'To Uninstall'){attron(COLOR_PAIR(4))}
+		   addstr($y,int($x/2)-6,"$b");
+		   if($j==$index){attron(COLOR_PAIR(2))}
+		   else{attroff(COLOR_PAIR(1) | COLOR_PAIR(4))}
+		   addstr($y,int($x/2)+8,"$c");
+	           $y++;	
+	   }
+	   attroff(COLOR_PAIR(2) | A_REVERSE);
+        }
+	hline($y,0,ACS_HLINE,$x);
+	vline(0,($x/2)-7,ACS_VLINE,$th+4);
+	vline(0,($x/2)+6,ACS_VLINE,$th+4);
+	attron(COLOR_PAIR(3));
+	$y++;
+	addstr($y,0,$gl);
+	addstr($y,0, "   Package: ");
+	attroff(COLOR_PAIR(3));
+	attron(COLOR_PAIR(2));
+	printw $packets_list[$index];
+	attroff(COLOR_PAIR(2));
+	$y++;	
+	if(defined $packets{$packets_list[$index]}[1]){
+		attron(COLOR_PAIR(3));
+		addstr($y,0,$gl);
+		addstr($y,0, "   Sumary : ");
+		attroff(COLOR_PAIR(3));
+		printw $packets{$packets_list[$index]}[1];
+		$y++;
+	}
+	if(defined $packets{$packets_list[$index]}[9]){
+		attron(COLOR_PAIR(3));
+		addstr($y,0,$gl);
+		addstr($y,0, "   Package size: ");
+		attroff(COLOR_PAIR(3));
+		printw $packets{$packets_list[$index]}[9];
+		$y++;
+	}
+}
+sub read_poldek{
+	my $ind=-1;
+	my $pack='';	
+	system('clear');
+	print "\n\n     Wczytujê opisy pakietów...\n\n";
+	@desc=`/usr/bin/poldek --shcmd 'desc *'` or die "\n\n\n     Gdzie jest POLDEK? Dobre pytanie :-)\n\n";
+
+	my $dl=@desc;
+	print "\n     Przetwarzam opisy...\n\n";
+	while(++$ind<$dl){
+		if($desc[$ind]=~/Package:\s*(\S.*\S)/){$pack= $1;next}
+		if($desc[$ind]=~/Summary:\s*(\S.*\S)/){($packets{$pack}[1])=$1;next}
+		if($desc[$ind]=~/Group:\s*(\S.*\S)/){($packets{$pack}[2])=$1;next}
+		if($desc[$ind]=~/Vendor:\s*(\S.*\S)/){($packets{$pack}[3])=$1;next}
+		if($desc[$ind]=~/License:\s*(\S.*\S)/){($packets{$pack}[4])=$1;next}
+		if($desc[$ind]=~/Arch\/OS:\s*(\S.*\S)/){($packets{$pack}[5])=$1;next}
+		if($desc[$ind]=~/URL:\s*(\S.*\S)/){($packets{$pack}[6])=$1;next}
+		if($desc[$ind]=~/Built:\s*(\S.*\S)/){($packets{$pack}[7])=$1;next}
+		if($desc[$ind]=~/Size:\s*(\S.*\S)/){($packets{$pack}[8])=$1;next}
+		if($desc[$ind]=~/Package size:\s*(\S.*\S)/){($packets{$pack}[9])=$1;next}
+		if($desc[$ind]=~/Path:\s*(\S.*\S)/){($packets{$pack}[10])=$1;next}
+		if($desc[$ind]=~/Description:/){
+			while(++$ind<$dl && $desc[$ind] !~ /Package:/ ){
+				$desc[$ind]=~s/^\n$//;
+				if(defined $packets{$pack}[11]){
+				$packets{$pack}[11].=$desc[$ind];
+				}else{$packets{$pack}[11]=$desc[$ind]}
+			}
+		$ind--;	
+		next;
+		}
+	}
+	print "\n     Ufffffffffff....";
+}
+sub on_key{
+#	if ($input eq chr(66)){$index++;&table;&men_key}
+	if ($input eq KEY_DOWN){$index++;&table;&men_key}
+#	if ($input eq chr(65)){$index--;&table;&men_key}
+	if ($input eq KEY_UP){$index--;&table;&men_key}
+	if ($input eq ' '){$index+=$th+1;$i+=$th+1;&table;&men_key}
+	if ($input eq 'b'){$index-=$th+1;$i+=$th+1;&table;&men_key}
+	if ($input eq 'i'){
+		if($packets{$packets_list[$index]}[0] eq ' ' && !grep /^\Q$packets_list[$index]\E$/,@to_install){
+			$packets{$packets_list[$index]}[0]='To  Install';
+			push @to_install,$packets_list[$index];
+			&table();
+			&men_key;
+		}
+		if($packets{$packets_list[$index]}[0] eq 'To Uninstall'){
+			grep s/^\Q$packets_list[$index]\E$/ /,@to_uninstall;
+			$packets{$packets_list[$index]}[0]='I';
+			&table;
+			&men_key;
+		}
+	}
+	if ($input eq 'u'){
+		if($packets{$packets_list[$index]}[0] eq 'I' && !grep /^\Q$packets_list[$index]\E$/,@to_uninstall){
+			$packets{$packets_list[$index]}[0]='To Uninstall';
+			push @to_uninstall,$packets_list[$index];
+			&table();
+			&men_key;
+		}
+		if($packets{$packets_list[$index]}[0] eq 'To  Install'){
+			grep s/^\Q$packets_list[$index]\E$/ /,@to_install;
+			$packets{$packets_list[$index]}[0]=' ';
+			&table;
+			&men_key;
+		}
+	}
+	if ($input eq 's'){
+		$index=0;
+		if($sort<5){$sort++;
+		}else{$sort=0}
+		if($sort==0){@packets_list= sort keys %packets}
+		if($sort==1){@packets_list= reverse sort keys %packets}
+		if($sort==2){@packets_list= sort {$packets{$b}[0] cmp $packets{$a}[0] || $a cmp $b}  keys %packets}
+		if($sort==3){@packets_list= sort {$packets{$a}[0] cmp $packets{$b}[0] || $a cmp $b} sort keys %packets}
+		if($sort==4){@packets_list= sort {$packets{$a}[2] cmp $packets{$b}[2] || $a cmp $b} sort keys %packets}
+		if($sort==5){@packets_list= sort {$packets{$b}[2] cmp $packets{$a}[2] || $a cmp $b} sort keys %packets}
+		&table();
+		&men_key;
+	}
+	if ($input eq 'p'){	
+		my $packets_to_inst='';
+		my $packets_to_uninst='';
+		def_prog_mode();
+		endwin();
+		system('clear');
+		if(grep /\S/,@to_install or grep /\S/,@to_uninstall){
+			if(grep /\S/,@to_install){
+				print $kzie;
+				print "\n\n   Pakiety do zainstalowania:\n\n";
+				foreach my $a (@to_install){
+					if($a ne ' '){
+						print " $a\n";
+						$packets_to_inst=join(' ',($packets_to_inst,$a));
+					}
+				}
+				print $kbia;
+				print "\n Poldek do dzie³a...\n\n";
+				system("poldek --shcmd \'install $packets_to_inst\'");
+				@to_install=();
+			}
+			if(grep /\S/,@to_uninstall){
+				print $kcze;
+				print "\n\n   Pakiety do odinstalowania:\n\n";
+				foreach my $a (@to_uninstall){
+					if($a ne ' '){
+						print " $a\n";
+						$packets_to_uninst=join(' ',($packets_to_uninst,$a));
+					}
+				}
+				print $kbia;
+				print "\n Poldek do dzie³a...\n\n";
+				system("poldek --shcmd \'uninstall $packets_to_uninst\'");
+				@to_uninstall=();
+			}
+			&chkinstalled;
+			print $kcze;
+			print "\n\n [KEY]\n";
+			print $kbia;
+			&key();
+		}
+	  	reset_prog_mode();
+		refresh();
+		&table;
+		&men_key;
+	}
+	if ($input eq chr(10)){
+		$input='';
+		my ($nx,$ny,$sx,$sy);
+		if($x>80){$nx=80;$sx=($x/2)-40}else{$nx=$x;$sx=0}
+		if($y>30){$ny=30;$sy=($y/2)-15}else{$ny=$y;$sy=0}
+		my $win_desc=newwin($ny,$nx,$sy,$sx);
+		while($input ne chr(10) && $input ne 'q'){
+		for(my $i=0;$i<$ny;$i++){
+			for(my $j=0;$j<$nx;$j++){
+				addch($win_desc,$i,$j,' ');
+			}
+		}
+		my $l=2;
+		attrset(COLOR_PAIR(3));
+		addstr($win_desc, $l, 2, "Package     ");
+		attron(COLOR_PAIR(2));
+		addstr($win_desc,,,":  $packets_list[$index]");
+		$l++;
+			if(defined $packets{$packets_list[$index]}[3]){
+			attron(COLOR_PAIR(3));
+			addstr($win_desc, $l, 2, "Vendor      ");
+			attroff(COLOR_PAIR(3));
+			addstr($win_desc,,,":  $packets{$packets_list[$index]}[3]");
+			$l++;
+			}
+		if(defined $packets{$packets_list[$index]}[1]){
+			attron(COLOR_PAIR(3));
+			addstr($win_desc, $l, 2, "Sumary      ");
+			attroff(COLOR_PAIR(3));
+			addstr($win_desc,,,":  $packets{$packets_list[$index]}[1]");
+			$l++;
+		}
+		if(defined $packets{$packets_list[$index]}[4]){
+			addstr($win_desc, $l, 2, "License     :  $packets{$packets_list[$index]}[4]");
+			$l++;
+		}
+		if(defined $packets{$packets_list[$index]}[5]){
+			addstr($win_desc, $l, 2, "Arch/OS     :  $packets{$packets_list[$index]}[5]");
+			$l++;
+		}
+		if(defined $packets{$packets_list[$index]}[6]){
+			addstr($win_desc, $l, 2, "URL         :  $packets{$packets_list[$index]}[6]");
+			$l++;
+		}
+		if(defined $packets{$packets_list[$index]}[7]){
+			addstr($win_desc, $l, 2, "Built       :  $packets{$packets_list[$index]}[7]");
+			$l++;
+		}
+		if(defined $packets{$packets_list[$index]}[8]){
+			addstr($win_desc, $l, 2, "Size        :  $packets{$packets_list[$index]}[8]");
+			$l++;
+		}
+		if(defined $packets{$packets_list[$index]}[9]){
+			addstr($win_desc, $l, 2, "Package size:  $packets{$packets_list[$index]}[9]");
+			$l++;
+		}
+		if(defined $packets{$packets_list[$index]}[10]){
+			addstr($win_desc, $l, 2, "Path        :  $packets{$packets_list[$index]}[10]");
+			$l++;
+		}
+		if(defined $packets{$packets_list[$index]}[11]){
+			vline($win_desc,0,14,ACS_VLINE,$l+1);
+			hline($win_desc,$l,0,ACS_HLINE,$nx);
+			$l++;
+			addstr($win_desc, $l, 6, "Description :\n");
+			my @temp_desc=split("\n",$packets{$packets_list[$index]}[11]);
+			foreach my $temp (@temp_desc){
+				addstr($win_desc,,,"\n   ");
+				addstr($win_desc,,,"$temp");
+			}
+		}
+		hline($win_desc,$ny-3,0,ACS_HLINE,$nx);
+		hline($win_desc,$l+1,0,ACS_HLINE,$nx);
+		attron(COLOR_PAIR(1));
+		addstr($win_desc,$ny-2,$nx/2-34,"[ENTER/Q]-Exit [UP/DOWN] [F]-Find [I]-Inst. [U]-Uninst. [P]-Proc.");
+		attroff(COLOR_PAIR(1));
+		box($win_desc, 0, 0);
+		refresh($win_desc);
+		$input=&key;
+		if($input eq 'i' or $input eq 'u' or $input eq 'p' or $input eq 'f'){&on_key;$input=''}
+		if($input eq KEY_DOWN){$index++}
+		if($input eq KEY_UP){$index--}
+		&table;
+		for(my $i=0;$i<$ny;$i++){
+			for(my $j=0;$j<$nx;$j++){
+				addch($i+$sy,$j+$sx,' ');
+			}
+		}
+		box(stdscr, 0, 0);
+		refresh();
+	}
+		delwin($win_desc);
+		$input='';
+		&table;
+		&men_key;
+	}
+	if ($input eq 'g' or $input eq 'h'){
+		my $gg=1;
+		if ($input eq 'g'){$g++;
+		}else{$g--;if($g<2){$g=1;$index=0;$i=0}
+		}
+		my $ind=0;
+		@packets_list= sort {$packets{$a}[2] cmp $packets{$b}[2] || $a cmp $b}  keys %packets;
+		my $il=@packets_list;
+		while($gg<$g){
+			if($packets{$packets_list[$ind]}[2] ne $packets{$packets_list[$ind+1]}[2]){
+				$gg++;
+				$index=$ind+1;
+				$i=$ind+1;
+			}
+			$ind++;
+			if($ind==$il-1){$ind=0;$g=0};
+		}
+		&table;
+		&men_key;
+	}
+	if ($input eq 'f'){
+		@packets_list= sort keys %packets;
+		&table;
+		my $buf='';
+		&clr;
+		addstr($y-3,5," Find>$buf");
+		&find_inf;			
+		SO: while(($input=&key) ne chr(10)){
+			my $ind=0;
+			if($input eq KEY_DOWN){$index++;last}
+			if($input eq KEY_UP){$index--;last}
+			if($input eq KEY_BACKSPACE){
+			$buf=substr($buf,0,(length($buf)-1));
+			}else{$buf.=$input;}
+			foreach my $a (@packets_list){
+				if($packets_list[$ind] =~ /^\Q$buf\E/){
+					$index=$ind;
+					&table;
+					&clr;
+					addstr($y-3,5," Find>$buf");
+					&find_inf;
+					next SO;
+				}
+				$ind++;
+			}
+			$buf=substr($buf,0,(length($buf)-1));
+			&table;
+			&clr;
+			addstr($y-3,5," Find>$buf");
+			&find_inf;
+		}
+		&table;
+		printw "\n\n                                   ";
+		printw "\n                                   ";
+		&men_key;
+		sub clr{
+			my $gl='';
+        		while(length($gl)<$x){$gl.=' '}
+			addstr($y-3,0,$gl);
+			addstr($y-2,0,$gl);
+			addstr($y-1,0,$gl);
+		}
+		sub find_inf{
+			attron(COLOR_PAIR(1));
+			addstr($y-2,$x/2-16,"[UP]-Up [DOWN]-Next [ENTER]-Ends");
+			attroff(COLOR_PAIR(1));
+			box(stdscr, 0, 0);
+			refresh();
+		}
+	}
+		
+}
+sub chkinstalled{
+	@installed=`rpm -qa`;
+	$num_pinst=0;
+	foreach my $a (@installed){
+		chomp $a;
+	}
+	foreach my $a (keys %packets){
+		$packets{$a}[0]=' ';
+		foreach my $b (@installed){
+			if($a eq $b){
+				$packets{$a}[0]='I';
+				$num_pinst++;
+			}
+		}
+	}
+}
+sub men_key{
+	attron(COLOR_PAIR(1));
+	addstr($y-3,$x/2-38,"[ENTER]-FullDesc [S]-Sort [G/H]-ChGrp [I]-Install [U]-Uninstall [P]-Process");
+	addstr($y-2,$x/2-29,"[F]-Find [DOWN]-Next [UP]-Up [SPACE]-PgDown [B]-PgUp [Q]-Quit");
+	attroff(COLOR_PAIR(1));
+	box(stdscr, 0, 0);
+	refresh();
+}
+sub my_colors{
+	init_pair(1, COLOR_RED, COLOR_BLACK);
+	init_pair(2, COLOR_GREEN, COLOR_BLACK);
+	init_pair(3, COLOR_YELLOW, COLOR_BLACK);
+	init_pair(4, COLOR_BLUE, COLOR_BLACK);
+	init_pair(5, COLOR_MAGENTA, COLOR_BLACK);
+	init_pair(6, COLOR_CYAN, COLOR_BLACK);
+	init_pair(7, COLOR_WHITE, COLOR_BLACK);
+#	init_pair(8, COLOR_RED, COLOR-BLACK);
+#	init_pair(9, COLOR_RED, COLOR-BLACK);
+#	init_pair(10, COLOR_RED, COLOR-BLACK);
+#	init_pair(11, COLOR_RED, COLOR-BLACK);
+}	
