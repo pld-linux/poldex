@@ -2,11 +2,11 @@
 Summary:	Frontend to poldek
 Summary(pl):	Nak³adka na poldka
 Name:		poldex
-Version:	0.16
+Version:	0.16.1
 Release:	1
 License:	GPL
 Group:		Applications
-Source0:	http://www.foto-color.info/poldex-0.16.tar.bz2	
+Source0:	http://www.foto-color.info/%{name}-%{version}.tar.bz2	
 URL:		http://www.foto-color.info/poldex.html	
 BuildRequires:	rpm-perlprov
 Requires:	poldek
