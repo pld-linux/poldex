@@ -8,7 +8,7 @@ License:	GPL
 Group:		Applications
 Source0:	http://www.foto-color.info/poldex	
 URL:		http://www.foto-color.info/poldex.html	
-#Requires:	perl-Term-ReadKey
+BuildRequires:	perl-Term-ReadKey
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -19,9 +19,7 @@ Przyjemna nak³adka na poldka.
 
 %prep
 %setup -qcT
-cp %{SOURCE0} ../%{name}-%{version}
-
-%build
+cp %{SOURCE0} .
 
 %install
 rm -rf $RPM_BUILD_ROOT
