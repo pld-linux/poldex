@@ -100,3 +100,11 @@
  
  #: ../poldex:1243
  msgid "Don't automatically remove packages orphaned by selected ones"
+@@ -294,7 +297,3 @@
+ #: ../poldex:1405
+ msgid "Finded "
+ msgstr "Znaleziono "
+-
+-#: ../poldex:1405
+-msgid " unsatisfied deps!"
+-msgstr " niespe³nione zale¿no¶ci!"
