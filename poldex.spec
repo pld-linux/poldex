@@ -2,14 +2,13 @@
 Summary:	Frontend to poldek
 Summary(pl):	Nak³adka na poldka
 Name:		poldex
-Version:	0.1
-Release:	2
+Version:	0.15
+Release:	1
 License:	GPL
 Group:		Applications
 Source0:	http://www.foto-color.info/poldex	
-Patch0:		%{name}-warning121.patch
 URL:		http://www.foto-color.info/poldex.html	
-BuildRequires:	perl-Term-ReadKey
+BuildRequires:	perl-Curses
 BuildRequires:	rpm-perlprov
 Requires:	poldek
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
@@ -23,7 +22,6 @@ Przyjemna nak³adka na poldka napisana w perlu.
 %prep
 %setup -qcT
 cp %{SOURCE0} .
-%patch0 -p0
 
 %install
 rm -rf $RPM_BUILD_ROOT
