@@ -11,6 +11,7 @@ Release:	1
 License:	GPL
 Group:		Applications
 Source0:	http://www.foto-color.info/%{name}-%{version}.tar.bz2	
+# Source0-md5:	6b0abef9e93e3bcf026a511f05af9d74
 URL:		http://www.foto-color.info/poldex.html	
 %{!?_without_autodeps:BuildRequires:	perl-Curses}
 BuildRequires:	rpm-perlprov
