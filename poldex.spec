@@ -1,7 +1,3 @@
-#
-# Conditional build:
-# _without_autodeps	- don't BR packages needed only for resolving deps
-#
 %include        /usr/lib/rpm/macros.perl
 Summary:	Frontend to poldek
 Summary(pl):	Nak³adka na poldka
@@ -13,7 +9,6 @@ Group:		Applications
 Source0:	http://www.foto-color.info/%{name}-%{version}.tar.bz2
 # Source0-md5:	0e00c32dd22f7ede30e0181d68fd4eef
 URL:		http://www.foto-color.info/poldex.html
-%{!?_without_autodeps:BuildRequires:	perl-Curses}
 BuildRequires:	rpm-perlprov
 Requires:	poldek
 BuildArch:	noarch
