@@ -6,8 +6,7 @@ Version:	0.17
 Release:	1
 License:	GPL
 Group:		Applications
-#Source0:	http://www.yogib.risp.pl/poldex/%{name}-%{version}.tar.bz2
-Source0:	%{name}-%{version}.tar.bz2
+Source0:	http://www.yogib.risp.pl/poldex/%{name}-%{version}.tar.bz2
 # Source0-md5:	ba8b3c2731e975f79a3e0b07d5da7694
 URL:		http://www.yogib.risp.pl/
 BuildRequires:	rpm-perlprov
