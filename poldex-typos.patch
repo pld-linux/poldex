@@ -1,0 +1,76 @@
+--- poldex-0.17.3/poldex~	Tue Aug  3 22:15:55 2004
++++ poldex-0.17.3/poldex	Tue Aug  3 22:15:55 2004
+@@ -251,7 +251,7 @@
+ 	if(defined $packets{$packets_list[$index]}[1]){
+ 		attron(COLOR_PAIR(3));
+ 		addstr($y - 6, 0, $gl);
+-		addstr($y - 6, 0, _("   Sumary : "));
++		addstr($y - 6, 0, _("   Summary: "));
+ 		attroff(COLOR_PAIR(3));
+ 		printw $packets{$packets_list[$index]}[1];
+ 	}
+@@ -506,7 +506,7 @@
+ 		}
+ 		if(defined $packets{$packets_list[$index]}[1]){
+ 			attron($win_desc, COLOR_PAIR(3));
+-			addstr($win_desc, $l, 1, _(" Sumary      "));
++			addstr($win_desc, $l, 1, _(" Summary     "));
+ 			attroff($win_desc, COLOR_PAIR(3));
+ 			addstr($win_desc,,,":  $packets{$packets_list[$index]}[1]");
+ 			$l++;
+@@ -873,7 +873,7 @@
+ 				attron($win_fi, COLOR_PAIR(6) | A_REVERSE);
+ 			     	addstr($win_fi, 1, 0, $gl);
+ 				if($buf eq ''){
+-					addstr($win_fi, 1, 5, _("Founded packages with file"));
++					addstr($win_fi, 1, 5, _("Found packages with file"));
+ 					addstr($win_fi, 1, 26, "> $print_buf");
+ 				}else{addstr($win_fi, 1, 5, _("Find package"));
+ 					addstr($win_fi, 1, 18, "> $print_buf");
+@@ -1473,7 +1473,7 @@
+ 			$il++;
+ 		}
+ 	}
+-	&info(_("Finded ") . $il . _(" unsatisfied deps!"));
++	&info(_("Found ") . $il . _(" unsatisfied deps!"));
+ 	sleep 2;
+ }
+ 
+--- poldex-0.17.3/locale/pl/LC_MESSAGES/poldex.po~	Tue Aug  3 22:14:35 2004
++++ poldex-0.17.3/locale/pl/LC_MESSAGES/poldex.po	Tue Aug  3 22:15:37 2004
+@@ -35,7 +35,7 @@
+ msgstr "   Pakiet : "
+ 
+ #: ../poldex:223 poldex:223
+-msgid "   Sumary : "
++msgid "   Summary: "
+ msgstr "   Opis   : "
+ 
+ #: ../poldex:230 poldex:230
+@@ -75,7 +75,7 @@
+ msgstr " Producent   "
+ 
+ #: ../poldex:471 poldex:471
+-msgid " Sumary      "
++msgid " Summary     "
+ msgstr " Opis        "
+ 
+ #: ../poldex:478 poldex:478
+@@ -140,7 +140,7 @@
+ msgstr "Nie znaleziono!"
+ 
+ #: ../poldex:838 poldex:838
+-msgid "Founded packages with file"
++msgid "Found packages with file"
+ msgstr " Pakiety zawieraj±ce plik "
+ 
+ #: ../poldex:840 poldex:840
+@@ -240,7 +240,7 @@
+ msgstr "Weryfikujê pakiety..."
+ 
+ #: poldex:1405
+-msgid "Finded "
++msgid "Found "
+ msgstr "Znaleziono "
+ 
+ msgid " unsatisfied deps!"
