@@ -7,12 +7,17 @@ Summary:	Frontend to poldek
 Summary(pl):	Nak³adka na poldka
 Name:		poldex
 Version:	0.17.3
-Release:	2
+Release:	3
 License:	GPL
 Group:		Applications
-Source0:	http://www.yogib.risp.pl/poldex/%{name}-%{version}.tar.bz2
-# Source0-md5:	41389284af23dc3173accfc0b846d532
+#Source0:	http://www.yogib.risp.pl/poldex/%{name}-%{version}.tar.bz2
+# more complete source (contains .po file)
+Source0:	%{name}-%{version}.tar.bz2
+# Source0-md5:	baea5cfc7fd46c34e401c85f0ab8cd18
 URL:		http://www.yogib.risp.pl/
+Patch0:		%{name}-pl_update.patch
+Patch1:		%{name}-typos.patch
+BuildRequires:	gettext-devel
 %if %{with autodeps}
 BuildRequires:	perl-Curses
 BuildRequires:	perl-Locale-gettext
@@ -31,6 +36,11 @@ Przyjemna nak³adka na poldka napisana w Perlu.
 
 %prep
 %setup -q
+%patch0 -p1
+%patch1 -p1
+
+%build
+msgfmt -o locale/pl/LC_MESSAGES/poldex.mo locale/pl/LC_MESSAGES/poldex.po
 
 %install
 rm -rf $RPM_BUILD_ROOT
