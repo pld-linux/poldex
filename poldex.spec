@@ -25,16 +25,16 @@ Przyjemna nak³adka na poldka napisana w Perlu.
 
 %install
 rm -rf $RPM_BUILD_ROOT
-install -d $RPM_BUILD_ROOT%{_bindir}
-install -d $RPM_BUILD_ROOT%{_datadir}
+install -d $RPM_BUILD_ROOT{%{_bindir},%{_datadir}}
 
 install %{name} $RPM_BUILD_ROOT%{_bindir}
 cp -R locale $RPM_BUILD_ROOT%{_datadir}
 
+%find_lang %{name}
+
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%files
+%files -f %{name}.lang
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_bindir}/*
-%{_datadir}
