@@ -1,3 +1,4 @@
+%include        /usr/lib/rpm/macros.perl
 Summary:	GUI frontend to poldek
 Summary(pl):	Nak³adka GUI na poldka
 Name:		poldex
@@ -7,7 +8,7 @@ License:	GPL
 Group:		Applications
 Source0:	http://www.foto-color.info/poldex	
 URL:		http://www.foto-color.info/poldex.html	
-Requires:	perl-Term-ReadKey
+#Requires:	perl-Term-ReadKey
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
