@@ -1,6 +1,6 @@
 %include        /usr/lib/rpm/macros.perl
-Summary:	GUI frontend to poldek
-Summary(pl):	Nak³adka GUI na poldka
+Summary:	Frontend to poldek
+Summary(pl):	Nak³adka na poldka
 Name:		poldex
 Version:	0.1
 Release:	2
@@ -15,10 +15,10 @@ Requires:	poldek
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
-Nice GUI frontend to poldek.
+Nice frontend to poldek written in perl.
 
 %description -l pl
-Przyjemna nak³adka na poldka.
+Przyjemna nak³adka na poldka napisana w perlu.
 
 %prep
 %setup -qcT
