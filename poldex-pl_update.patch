@@ -1,0 +1,102 @@
+--- poldex-0.17.3/locale/pl/LC_MESSAGES/poldex.po.old	Tue Aug  3 22:10:14 2004
++++ poldex-0.17.3/locale/pl/LC_MESSAGES/poldex.po	Tue Aug  3 22:12:58 2004
+@@ -1,4 +1,14 @@
+-domain "poldex"
++# domain "poldex"
++msgid ""
++msgstr ""
++"Project-Id-Version: poldex 0.17.3\n"
++"POT-Creation-Date: 2003-01-16 19:32+0100\n"
++"PO-Revision-Date: 2004-08-03 22:12+0100\n"
++"Last-Translator: Andrzej Krzysztofowicz <ankry@pld-linux.org>\n"
++"Language-Team: Polish <pl@li.org>\n"
++"MIME-Version: 1.0\n"
++"Content-Type: text/plain; charset=ISO-8859-2\n"
++"Content-Transfer-Encoding: 8bit\n"
+ 
+ #: ../poldex:149 ../poldex:153 poldex:149 poldex:153
+ msgid " Packages ("
+@@ -32,10 +42,6 @@
+ msgid "   Package size: "
+ msgstr "   Rozmiar     : "
+ 
+-#: poldex:246
+-msgid "     I can't find POLDEK\n"
+-msgstr "     Nie mogê znale¼æ POLDKA!\n"
+-
+ #: ../poldex:378 poldex:378
+ msgid "Packages to reinstall"
+ msgstr "Pakiety do reinstalacji"
+@@ -90,7 +96,7 @@
+ 
+ #: ../poldex:513 poldex:513
+ msgid " Package size"
+-msgstr " Rozmar pak. "
++msgstr " Rozmiar pak."
+ 
+ #: ../poldex:520 poldex:520
+ msgid " Path        "
+@@ -114,7 +120,7 @@
+ 
+ #: ../poldex:683 poldex:683
+ msgid "[1-5]-Color [C]-ClearColors"
+-msgstr "[1-5]-Kolor [C]-Usuñ Kolor"
++msgstr "[1-5]-Kolor [C]-Usuñ Kolor "
+ 
+ #: ../poldex:684 poldex:684
+ msgid "[Q]-Exit [U]-Up [P]-Upa [ENTER][X]-Dis/Activate"
+@@ -169,6 +175,10 @@
+ msgid "[UP]-Up [DOWN]-Next [ENTER]-Ends  Ex: Find package: >foo*, file: >/foo"
+ msgstr "[UP]/[DOWN]   [ENTER]-Wyjd¼   Przyk: Znajd¼ pakiet: >foo*, plik: >/foo"
+ 
++#: poldex:985
++msgid "Installed from other sources"
++msgstr "Zainstalowane z innego ¼ród³a"
++
+ #: ../poldex:980 poldex:980
+ msgid "Verifying..."
+ msgstr "Weryfikujê..."
+@@ -206,8 +216,8 @@
+ msgstr ""
+ 
+ #: poldex:1148
+-msgid "  Some other Poldek is runing!\n"
+-msgstr "  Inny Poldek pracuje!\n"
++msgid "\n\n  Some other Poldek is runing!\n\n"
++msgstr "\n\n  Inny Poldek pracuje!\n\n"
+ 
+ #: ../poldex:1163 poldex:1163
+ msgid "Options"
+@@ -235,21 +245,14 @@
+ 
+ msgid " unsatisfied deps!"
+ msgstr " niespe³nionych zale¿.!"
++
+ #: ../poldex:1375
+ msgid "Reading packages..."
+ msgstr "Wczytujê pakiety..."
+ 
+-#: ../poldex:246
+-msgid "     I can't find POLDEK\n"
+-msgstr "   Nie mogê znale¼æ POLDKA\n"
+-
+-#: ../poldex:1148
+-msgid "  Some other Poldek is runing!\n"
+-msgstr "  Inny Poldek pracuje!\n"
+-
+ #: ../poldex:1233
+ msgid "Downgrade"
+-msgstr ""
++msgstr "Zainstaluj starsz± wersjê"
+ 
+ #: ../poldex:1234 ../poldex:1241
+ msgid "Be unconcerned"
+@@ -281,7 +284,7 @@
+ 
+ #: ../poldex:1242
+ msgid "Ignore broken dependencies"
+-msgstr "Ignoruj zerwane zale¿no¶ci"
++msgstr "Ignoruj naruszone zale¿no¶ci"
+ 
+ #: ../poldex:1243
+ msgid "Don't automatically remove packages orphaned by selected ones"
