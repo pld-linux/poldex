@@ -8,9 +8,9 @@ License:	GPL
 Group:		Applications
 Source0:	http://www.foto-color.info/poldex	
 URL:		http://www.foto-color.info/poldex.html	
-BuildRequires:	perl-Curses
 BuildRequires:	rpm-perlprov
 Requires:	poldek
+BuildArch:	noarch
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
