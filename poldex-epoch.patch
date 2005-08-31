@@ -1,0 +1,16 @@
+--- poldex-0.17.5/poldex.orig	2005-08-31 22:45:57.000000000 +0200
++++ poldex-0.17.5/poldex	2005-08-31 22:46:44.000000000 +0200
+@@ -296,10 +296,11 @@
+ 	PARSE: while ($desc = <TMP>){
+ 		if ($desc =~ /^Package:\s*(\S+)/){
+ 			$pack = $1; 
++			$pack =~ s/\d+://;
+ 			$ind++; 
+-			if($sign ne substr($1, 0, 1) && $START == 0){
++			if($sign ne substr($pack, 0, 1) && $START == 0){
+ 				printw $prg;
+-				$sign = substr($1, 0, 1);
++				$sign = substr($pack, 0, 1);
+ 				refresh();
+ 			}
+ 		}
