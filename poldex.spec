@@ -8,10 +8,11 @@ Summary(pl):	Nak³adka na poldka
 Name:		poldex
 Version:	0.17.5
 Release:	1
-License:	GPL
+License:	GPL v2
 Group:		Applications
 Source0:	%{name}-%{version}.tar.bz2
 # Source0-md5:	5aea7ff274936439c98b65fa016a1510
+Patch0:		%{name}-epoch.patch
 #URL:		http://www.yogib.risp.pl/
 %if %{with autodeps}
 BuildRequires:	perl-Curses
@@ -31,6 +32,7 @@ Przyjemna nak³adka na poldka napisana w Perlu.
 
 %prep
 %setup -q
+%patch0 -p1
 
 %install
 rm -rf $RPM_BUILD_ROOT
