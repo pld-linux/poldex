@@ -4,7 +4,7 @@
 #
 %include	/usr/lib/rpm/macros.perl
 Summary:	Frontend to poldek
-Summary(pl):	Nak≥adka na poldka
+Summary(pl.UTF-8):   Nak≈Çadka na poldka
 Name:		poldex
 Version:	0.17.5
 Release:	1
@@ -27,8 +27,8 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %description
 Nice frontend to poldek written in Perl.
 
-%description -l pl
-Przyjemna nak≥adka na poldka napisana w Perlu.
+%description -l pl.UTF-8
+Przyjemna nak≈Çadka na poldka napisana w Perlu.
 
 %prep
 %setup -q
