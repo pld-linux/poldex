@@ -4,7 +4,7 @@
 #
 %include	/usr/lib/rpm/macros.perl
 Summary:	Frontend to poldek
-Summary(pl.UTF-8):   Nakładka na poldka
+Summary(pl.UTF-8):	Nakładka na poldka
 Name:		poldex
 Version:	0.17.5
 Release:	1
